@@ -1,9 +1,9 @@
 #!/bin/bash --login
 
-#SBATCH --time=00:40:00      
-#SBATCH --ntasks=1           
-#SBATCH --cpus-per-task=20   
-#SBATCH --mem=32G   
+#SBATCH --time=00:40:00
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=20
+#SBATCH --mem=32G
 #SBATCH --job-name  count
 #SBACTH -A shade-cole-bonito
 
@@ -12,12 +12,13 @@ cd ${SLURM_SUBMIT_DIR}
 cores=$SLURM_CPUS_PER_TASK
 RAM_GB=$SLURM_MEM_PER_NODE
 
+echo -e "\n==================== Preprocessing quality check! ====================\n"
+
 conda activate genome_work
 
-echo -e "\n==================== Preprocessing quality check! ====================\n"
-notify-send "Preprocessing quality check" "FASTQC" -t 10000
+mkdir stats/
+cd raw_reads/
 
-cd sra/
 ls *.fastq > read_files.list
 
 while read _1
@@ -36,3 +37,5 @@ done > ../stats/reads.counts
 cd ..
 scontrol show job $SLURM_JOB_ID
 cp slurm* stats/reads_preprocess.txt
+
+echo -e "\n============================= All done! ==============================\n"
